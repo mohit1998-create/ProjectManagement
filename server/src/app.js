@@ -11,4 +11,10 @@ app.get("/", (req, res) => {
   res.send("API Running");
 });
 
+const authRoutes = require(
+  "./modules/auth/auth.routes"
+);
+
+app.use("/api/auth", authRoutes);
+app.use(errorHandler);
 module.exports = app;
