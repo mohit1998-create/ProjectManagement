@@ -1,64 +1,68 @@
-const express =
-  require("express");
+const express = require("express");
 
-const router =
-  express.Router();
+const router = express.Router();
 
-const authenticate =
-  require("../../middleware/auth.middleware");
-
-const authorize =
-  require("../../middleware/role.middleware");
-
-const validate =
-  require("../../middleware/validate.middleware");
-
- const { getProjectById ,updateProject,archiveProject } = require(
-  "./project.controller"
-);  
-const {createProjectSchema, updateProjectSchema } = require(
-  "./project.validation"
-); 
-  
+const authenticate = require("../../middleware/auth.middleware");
+const authorize = require("../../middleware/role.middleware");
+const validate = require("../../middleware/validate.middleware");
 
 const {
   createProject,
-  getProjects
-} = require(
-  "./project.controller"
-);
+  getProjects,
+  getProjectById,
+  updateProject,
+  archiveProject,
+} = require("./project.controller");
 
-router.use(
-  authenticate,
-  authorize("Admin")
-);
+const {
+  createProjectSchema,
+  updateProjectSchema,
+} = require("./project.validation");
 
 router.post(
   "/",
-  validate(
-    createProjectSchema
-  ),
+  authenticate,
+  authorize("Admin"),
+  validate(createProjectSchema),
   createProject
 );
 
 router.get(
   "/",
+  authenticate,
+  authorize(
+    "Admin",
+    "ProjectManager"
+  ),
   getProjects
 );
 
 router.get(
   "/:id",
+  authenticate,
+  authorize(
+    "Admin",
+    "ProjectManager"
+  ),
   getProjectById
 );
 
 router.put(
   "/:id",
+  authenticate,
+  authorize(
+    "Admin",
+    "ProjectManager"
+  ),
   validate(updateProjectSchema),
   updateProject
 );
 
 router.patch(
-  "/:id",
+  "/:id/archive",
+  authenticate,
+  authorize("Admin"),
   archiveProject
 );
+
 module.exports = router;

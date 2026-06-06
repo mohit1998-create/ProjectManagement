@@ -34,6 +34,8 @@ const getProjects = asyncHandler(
         search: req.query.search,
         status: req.query.status,
         managerId: req.query.managerId,
+        currentUser:req.user,
+
       });
 
     sendResponse(
@@ -48,7 +50,8 @@ const getProjects = asyncHandler(
 const getProjectById = asyncHandler(    
     async (req, res) => {   
         const project = await projectService.getProjectById(
-            req.params.id
+            req.params.id,
+            req.user
         );
 
         sendResponse(
@@ -64,7 +67,8 @@ const updateProject = asyncHandler(
     async (req, res) => {
         const project = await projectService.updateProject(
             req.params.id,
-            req.body
+            req.body,
+            req.user
         );
 
         sendResponse(

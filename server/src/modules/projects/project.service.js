@@ -28,15 +28,28 @@ const getProjects = async ({
   search,
   status,
   managerId,
+  currentUser
 }) => {
   const filter = {};
+  if (
+  currentUser.role ===
+  "ProjectManager"
+  ) {
+  filter.managerId =
+    currentUser._id;
+  }
 
   if (status) {
     filter.status = status;
   }
 
-  if (managerId) {
-    filter.managerId = managerId;
+  if (
+    currentUser.role ===
+    "Admin" &&
+    managerId
+  ) {
+    filter.managerId =
+      managerId;
   }
 
   if (search) {
@@ -78,12 +91,16 @@ const getProjects = async ({
   };
 };
 
-const getProjectById = async (id) => {
+const getProjectById = async (
+  id,
+  currentUser
+) => {
   const project =
-    await Project.findById(id).populate(
-      "managerId",
-      "name email role"
-    );
+    await Project.findById(id)
+      .populate(
+        "managerId",
+        "name email role"
+      );
 
   if (!project) {
     throw new ApiError(
@@ -92,10 +109,26 @@ const getProjectById = async (id) => {
     );
   }
 
-  return project;
-};  
+  if (
+    currentUser.role ===
+    "ProjectManager"
+  ) {
+    if (
+      project.managerId._id.toString() !==
+      currentUser._id.toString()
+    ) {
+      throw new ApiError(
+        403,
+        "Access denied"
+      );
+    }
+  }
 
-const updateProject = async (id, payload) => {
+  return project;
+};
+
+const updateProject = async (id, payload, currentUser) => {
+
   const existingProject = await Project.findById(id);
 
   if (!existingProject) {
@@ -104,6 +137,21 @@ const updateProject = async (id, payload) => {
       "Project not found"
     );
   }
+
+    if (
+  currentUser.role ===
+  "ProjectManager"
+) {
+  if (
+    project.managerId.toString() !==
+    currentUser._id.toString()
+  ) {
+    throw new ApiError(
+      403,
+      "Access denied"
+    );
+  }
+}
 
   if (existingProject.status === "Archived") {
     throw new ApiError(
