@@ -24,7 +24,12 @@ const projectRoutes = require(
   "./modules/projects/project.routes"
 );
 
+const taskRoutes = require(
+  "./modules/tasks/task.routes"
+);
+
 app.use("/api/projects", projectRoutes);
+app.use("/api/tasks", taskRoutes);
 
 app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
