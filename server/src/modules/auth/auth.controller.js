@@ -2,8 +2,7 @@
 const asyncHandler = require(
   "../../utils/asyncHandler"
 );
-const { registerUser } = require("./auth.service");
-const { loginUser } = require("./auth.service");
+const { registerUser  ,loginUser } = require("./auth.service");
 
 
 const register = asyncHandler(
@@ -34,8 +33,16 @@ const login = asyncHandler(
   }
 );
 
+const profile = async (req, res) => {
+  res.status(200).json({
+    success: true,
+    data: req.user,
+  });
+};
+
 
 module.exports = {
   register,
   login,
+  profile,
 };
