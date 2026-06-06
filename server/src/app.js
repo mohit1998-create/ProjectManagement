@@ -20,6 +20,12 @@ require(
  "./modules/users/user.routes"
 );
 
+const projectRoutes = require(
+  "./modules/projects/project.routes"
+);
+
+app.use("/api/projects", projectRoutes);
+
 app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
 app.use(errorHandler);
