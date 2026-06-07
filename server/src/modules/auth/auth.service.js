@@ -3,6 +3,11 @@
 const bcrypt = require("bcryptjs");
 const User = require("../users/user.model");
 const { generateToken } = require("../../services/jwt.service");
+const {
+  createAuditLog,
+} = require(
+  "../auditlogs/auditlog.service"
+);
 
 
 const registerUser = async (data) => {
@@ -33,23 +38,48 @@ module.exports = {
   registerUser,
 };
 
-const loginUser = async (email, password) => {
-  const user = await User.findOne({ email });
+const loginUser = async (
+  email,
+  password
+) => {
+  const user =
+    await User.findOne({
+      email,
+    });
 
   if (!user) {
-    throw new Error("Invalid credentials");
+    throw new ApiError(
+      401,
+      "Invalid credentials"
+    );
   }
 
-  const isMatch = await bcrypt.compare(
-    password,
-    user.password
-  );
+  const isMatch =
+    await bcrypt.compare(
+      password,
+      user.password
+    );
 
   if (!isMatch) {
-    throw new Error("Invalid credentials");
+    throw new ApiError(
+      401,
+      "Invalid credentials"
+    );
   }
 
-  const token = generateToken(user);
+  const token =
+    generateToken(user);
+
+  await createAuditLog({
+    userId: user._id,
+    action: "LOGIN",
+    entity: "User",
+    entityId: user._id,
+    newValue: {
+      email: user.email,
+      role: user.role,
+    },
+  });
 
   return {
     user: {

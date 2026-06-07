@@ -1,23 +1,45 @@
 const Project = require("./project.model");
 const User = require("../users/user.model");
 const ApiError = require("../../utils/ApiError");
+const {
+  createAuditLog,
+} = require(
+  "../auditlogs/auditlog.service"
+);
 
-const createProject = async (payload) => {
-const manager =
-  await User.findOne({
-    _id: payload.managerId,
-    role: "ProjectManager",
-    isActive: true,
-  });
+const createProject = async (
+  payload,
+  currentUser
+) => {
+  const manager =
+    await User.findOne({
+      _id: payload.managerId,
+      role: "ProjectManager",
+      isActive: true,
+    });
 
-if (!manager) {
-  throw new ApiError(
-    400,
-    "Invalid Project Manager"
-  );
-}
+  if (!manager) {
+    throw new ApiError(
+      400,
+      "Invalid Project Manager"
+    );
+  }
+
   const project =
     await Project.create(payload);
+
+  await createAuditLog({
+    userId:
+      currentUser._id,
+    action:
+      "CREATE",
+    entity:
+      "Project",
+    entityId:
+      project._id,
+    newValue:
+      project.toObject(),
+  });
 
   return project;
 };
@@ -174,7 +196,8 @@ const updateProject = async (id, payload, currentUser) => {
       );
     }
   }
-
+const oldProject =
+  await Project.findById(id);
   const project =
     await Project.findByIdAndUpdate(
       id,
@@ -187,7 +210,14 @@ const updateProject = async (id, payload, currentUser) => {
       "managerId",
       "name email role"
     );
-
+await createAuditLog({
+  userId: currentUser._id,
+  action: "UPDATE",
+  entity: "Project",
+  entityId: project._id,
+  oldValue: oldProject,
+  newValue: project,
+});
   return project;
 };
 

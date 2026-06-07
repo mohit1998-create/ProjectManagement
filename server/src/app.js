@@ -40,6 +40,11 @@ const dashboardRoutes = require(
   "./modules/dashboard/dashboard.routes"
 );
 
+const reportRoutes = require(
+  "./modules/reports/report.routes"
+);
+
+app.use("/api/reports", reportRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 
 app.use("/api/worklogs", workLogRoutes);

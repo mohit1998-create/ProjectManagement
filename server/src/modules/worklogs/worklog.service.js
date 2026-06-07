@@ -10,11 +10,16 @@ const ApiError =
 const Project =
   require("../projects/project.model"); 
 
+const {
+  createAuditLog,
+} = require(
+  "../auditlogs/auditlog.service"
+);
+
 const createWorkLog = async (
   payload,
   currentUser
 ) => {
-  
   const task =
     await Task.findById(
       payload.taskId
@@ -51,6 +56,19 @@ const createWorkLog = async (
       hoursWorked:
         payload.hoursWorked,
     });
+
+  await createAuditLog({
+    userId:
+      currentUser._id,
+    action:
+      "WORKLOG_SUBMITTED",
+    entity:
+      "WorkLog",
+    entityId:
+      workLog._id,
+    newValue:
+      workLog.toObject(),
+  });
 
   return workLog;
 };

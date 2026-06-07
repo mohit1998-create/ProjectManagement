@@ -1,12 +1,18 @@
 const LogReply = require("./logReply.model");
 const WorkLog = require("./worklog.model");
 const ApiError = require("../../utils/ApiError");
+const {
+  createAuditLog,
+} = require(
+  "../auditlogs/auditlog.service"
+);
 
 const createReply = async (
   workLogId,
   payload,
   currentUser
 ) => {
+
   const workLog =
     await WorkLog.findById(workLogId)
       .populate({
@@ -34,11 +40,29 @@ const createReply = async (
     );
   }
 
-  return await LogReply.create({
-    workLogId,
-    managerId: currentUser._id,
-    message: payload.message,
+  const reply =
+    await LogReply.create({
+      workLogId,
+      managerId:
+        currentUser._id,
+      message:
+        payload.message,
+    });
+
+  await createAuditLog({
+    userId:
+      currentUser._id,
+    action:
+      "REPLY_ADDED",
+    entity:
+      "LogReply",
+    entityId:
+      reply._id,
+    newValue:
+      reply.toObject(),
   });
+
+  return reply;
 };
 
 const getReplies = async (

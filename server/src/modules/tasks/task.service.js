@@ -2,41 +2,85 @@ const Task = require("./task.model");
 const Project = require("../projects/project.model");
 const User = require("../users/user.model");
 const ApiError = require("../../utils/ApiError");
+const {
+  createAuditLog,
+} = require(
+  "../auditlogs/auditlog.service"
+);
 
-const createTask = async (payload, currentUser) => {
-  const project = await Project.findById(payload.projectId);
+const createTask = async (
+  payload,
+  currentUser
+) => {
+  const project =
+    await Project.findById(
+      payload.projectId
+    );
 
   if (!project) {
-    throw new ApiError(404, "Project not found");
+    throw new ApiError(
+      404,
+      "Project not found"
+    );
   }
 
-  if (project.status === "Archived") {
+  if (
+    project.status ===
+    "Archived"
+  ) {
     throw new ApiError(
       400,
       "Cannot create task in archived project"
     );
   }
 
-  const employee = await User.findOne({
-    _id: payload.assignedEmployee,
-    role: "Employee",
-    isActive: true,
-  });
+  const employee =
+    await User.findOne({
+      _id:
+        payload.assignedEmployee,
+      role: "Employee",
+      isActive: true,
+    });
 
   if (!employee) {
-    throw new ApiError(400, "Invalid employee");
+    throw new ApiError(
+      400,
+      "Invalid employee"
+    );
   }
 
   if (
-    currentUser.role === "ProjectManager" &&
-    project.managerId.toString() !== currentUser._id.toString()
+    currentUser.role ===
+      "ProjectManager" &&
+    project.managerId.toString() !==
+      currentUser._id.toString()
   ) {
-    throw new ApiError(403, "Access denied");
+    throw new ApiError(
+      403,
+      "Access denied"
+    );
   }
 
-  payload.createdBy = currentUser._id;
+  payload.createdBy =
+    currentUser._id;
 
-  return await Task.create(payload);
+  const task =
+    await Task.create(payload);
+
+  await createAuditLog({
+    userId:
+      currentUser._id,
+    action:
+      "CREATE",
+    entity:
+      "Task",
+    entityId:
+      task._id,
+    newValue:
+      task.toObject(),
+  });
+
+  return task;
 };
 
 const getTasks = async ({
@@ -300,7 +344,20 @@ const updateTaskStatus = async (
   task.status = status;
 
   await task.save();
-
+  await createAuditLog({
+  userId: currentUser._id,
+  action: "STATUS_CHANGE",
+  entity: "Task",
+  entityId: task._id,
+  oldValue: {
+    status:
+      previousStatus,
+  },
+  newValue: {
+    status:
+      task.status,
+  },
+});
   return await Task.findById(id)
     .populate(
       "assignedEmployee",
