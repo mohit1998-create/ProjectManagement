@@ -13,7 +13,13 @@ const createWorkLog =
 
       const workLog =
         await workLogService.createWorkLog(
-          req.body,
+          {
+            ...req.body,
+            attachment:
+              req.file
+                ? req.file.path
+                : null,
+          },
           req.user
         );
 
@@ -24,7 +30,7 @@ const createWorkLog =
         workLog
       );
     }
-);
+  );
 
 const getWorkLogs =
   asyncHandler(
@@ -65,13 +71,20 @@ const getWorkLogs =
     }
   );
 
-  const updateWorkLog =
+ const updateWorkLog =
   asyncHandler(
     async (req, res) => {
+
       const workLog =
         await workLogService.updateWorkLog(
           req.params.id,
-          req.body,
+          {
+            ...req.body,
+            attachment:
+              req.file
+                ? req.file.path
+                : undefined,
+          },
           req.user
         );
 

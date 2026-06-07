@@ -13,6 +13,10 @@ const authorize =
 const validate =
   require("../../middleware/validate.middleware");
 
+const upload = require(
+  "../../middleware/upload.middleware"
+);  
+
 const {
   createWorkLog,
   getWorkLogs,
@@ -80,6 +84,28 @@ router.patch(
     "Employee"
   ),
   archiveWorkLog
+);
+
+router.post(
+  "/",
+  upload.single(
+    "attachment"
+  ),
+  validate(
+    createWorkLogSchema
+  ),
+  createWorkLog
+);
+
+router.put(
+  "/:id",
+  upload.single(
+    "attachment"
+  ),
+  validate(
+    updateWorkLogSchema
+  ),
+  updateWorkLog
 );
 
 module.exports = router;

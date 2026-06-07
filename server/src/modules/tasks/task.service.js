@@ -9,6 +9,12 @@ const {
 );
 
 const {
+  sendTaskAssignedEmail,
+} = require(
+  "../../services/email.service"
+);
+
+const {
   createNotification,
 } = require(
   "../notifications/notification.service"
@@ -72,6 +78,15 @@ const createTask = async (
 
   const task =
     await Task.create(payload);
+
+    await sendTaskAssignedEmail({
+  email:
+    employee.email,
+
+  taskName:
+    task.title,
+});
+
 
   await createAuditLog({
     userId:

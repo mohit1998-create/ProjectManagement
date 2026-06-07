@@ -12,12 +12,15 @@ const createNotification =
     title,
     message,
     type,
+    reminderType = null,
   }) => {
+
     return await Notification.create({
       userId,
       title,
       message,
       type,
+      reminderType,
     });
   };
 

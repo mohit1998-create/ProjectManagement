@@ -50,10 +50,19 @@ const auditLogRoutes = require(
 const notificationRoutes = require(
     "./modules/notifications/notification.routes"
   );
+const path = require("path");
 
 app.use("/api/auditlogs", auditLogRoutes);
 
-
+app.use(
+  "/uploads",
+  express.static(
+    path.join(
+      __dirname,
+      "../uploads"
+    )
+  )
+);
 app.use("/api/notifications", notificationRoutes);
 
 app.use("/api/reports", reportRoutes);

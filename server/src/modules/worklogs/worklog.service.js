@@ -55,7 +55,9 @@ const createWorkLog = async (
 
       hoursWorked:
         payload.hoursWorked,
-    });
+      attachment:
+        payload.attachment,
+      });
 
   await createAuditLog({
     userId:
@@ -323,7 +325,12 @@ const updateWorkLog = async (
       "Access denied"
     );
   }
-
+if (
+  payload.attachment
+) {
+  workLog.attachment =
+    payload.attachment;
+}
   const updatedLog =
     await WorkLog.findByIdAndUpdate(
       id,

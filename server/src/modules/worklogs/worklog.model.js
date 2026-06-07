@@ -37,6 +37,10 @@ const workLogSchema =
   type: Boolean,
   default: true,
 },
+attachment: {
+  type: String,
+  default: null,
+},
     },
     {
       timestamps: true,

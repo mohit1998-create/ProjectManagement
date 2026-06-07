@@ -35,6 +35,10 @@ const notificationSchema =
         type: Boolean,
         default: false,
       },
+      reminderType: {
+  type: String,
+  default: null,
+}
     },
     {
       timestamps: true,
