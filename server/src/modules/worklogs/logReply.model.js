@@ -20,6 +20,12 @@ const logReplySchema =
       message: {
         type: String,
         required: true,
+        trim: true,
+      },
+
+      isActive: {
+        type: Boolean,
+        default: true,
       },
     },
     {

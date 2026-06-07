@@ -14,72 +14,62 @@ const validate =
   require("../../middleware/validate.middleware");
 
 const {
-  createWorkLog,
-  getWorkLogs,
-  getWorkLogById,
-  updateWorkLog,
-  archiveWorkLog,
+  createReply,
+  getReplies,
+  getReplyById,
+  updateReply,
+  archiveReply,
 } = require(
-  "./worklog.controller"
+  "./logReply.controller"
 );
 
 const {
-  createWorkLogSchema,
-  updateWorkLogSchema,
+  createReplySchema,
+  updateReplySchema,
 } = require(
-  "./worklog.validation"
+  "./logReply.validation"
 );
 
 router.use(authenticate);
 
 router.post(
-  "/",
-  authorize("Employee"),
-  validate(
-    createWorkLogSchema
-  ),
-  createWorkLog
+  "/:workLogId",
+  authorize("ProjectManager"),
+  validate(createReplySchema),
+  createReply
 );
 
 router.get(
-  "/",
+  "/:workLogId",
   authorize(
     "Admin",
     "ProjectManager",
     "Employee"
   ),
-  getWorkLogs
+  getReplies
 );
 
 router.get(
-  "/:id",
+  "/reply/:id",
   authorize(
     "Admin",
     "ProjectManager",
     "Employee"
   ),
-  getWorkLogById
+  getReplyById
 );
 
 router.put(
-  "/:id",
-  authorize(
-    "Admin",
-    "Employee"
-  ),
-  validate(
-    updateWorkLogSchema
-  ),
-  updateWorkLog
+  "/reply/:id",
+  authorize("ProjectManager"),
+  validate(updateReplySchema),
+  updateReply
 );
 
 router.patch(
-  "/:id/archive",
-  authorize(
-    "Admin",
-    "Employee"
-  ),
-  archiveWorkLog
+  "/reply/:id/archive",
+  authorize("ProjectManager"),
+  archiveReply
 );
 
 module.exports = router;

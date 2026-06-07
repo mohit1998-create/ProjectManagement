@@ -28,6 +28,17 @@ const taskRoutes = require(
   "./modules/tasks/task.routes"
 );
 
+const workLogRoutes = require(
+  "./modules/worklogs/worklog.routes"
+);
+
+const logReplyRoutes = require(
+  "./modules/worklogs/logReply.routes"
+);
+
+
+app.use("/api/worklogs", workLogRoutes);
+app.use("/api/replies", logReplyRoutes);
 app.use("/api/projects", projectRoutes);
 app.use("/api/tasks", taskRoutes);
 

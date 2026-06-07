@@ -20,6 +20,7 @@ const workLogSchema =
       description: {
         type: String,
         required: true,
+        trim: true,
       },
 
       hoursWorked: {
@@ -32,10 +33,15 @@ const workLogSchema =
         type: String,
         default: null,
       },
+          isActive: {
+  type: Boolean,
+  default: true,
+},
     },
     {
       timestamps: true,
-    }
+    },
+
   );
 
 module.exports =
