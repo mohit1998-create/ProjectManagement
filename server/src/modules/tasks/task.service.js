@@ -8,6 +8,12 @@ const {
   "../auditlogs/auditlog.service"
 );
 
+const {
+  createNotification,
+} = require(
+  "../notifications/notification.service"
+);
+
 const createTask = async (
   payload,
   currentUser
@@ -79,6 +85,19 @@ const createTask = async (
     newValue:
       task.toObject(),
   });
+  await createNotification({
+  userId:
+    employee._id,
+
+  title:
+    "New Task Assigned",
+
+  message:
+    `You have been assigned task: ${task.title}`,
+
+  type:
+    "TASK_ASSIGNED",
+});
 
   return task;
 };

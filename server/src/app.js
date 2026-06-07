@@ -44,6 +44,18 @@ const reportRoutes = require(
   "./modules/reports/report.routes"
 );
 
+const auditLogRoutes = require(
+  "./modules/auditlogs/auditlog.routes"
+);
+const notificationRoutes = require(
+    "./modules/notifications/notification.routes"
+  );
+
+app.use("/api/auditlogs", auditLogRoutes);
+
+
+app.use("/api/notifications", notificationRoutes);
+
 app.use("/api/reports", reportRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 

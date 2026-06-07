@@ -6,6 +6,12 @@ const {
 } = require(
   "../auditlogs/auditlog.service"
 );
+const {
+  createNotification,
+} = require(
+  "../notifications/notification.service"
+);
+
 
 const createReply = async (
   workLogId,
@@ -62,6 +68,19 @@ const createReply = async (
       reply.toObject(),
   });
 
+await createNotification({
+  userId:
+    workLog.employeeId,
+
+  title:
+    "Manager Reply",
+
+  message:
+    "Your work log received a reply",
+
+  type:
+    "WORKLOG_REPLY",
+});
   return reply;
 };
 
