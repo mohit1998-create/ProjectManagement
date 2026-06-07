@@ -35,7 +35,12 @@ const workLogRoutes = require(
 const logReplyRoutes = require(
   "./modules/worklogs/logReply.routes"
 );
+ 
+const dashboardRoutes = require(  
+  "./modules/dashboard/dashboard.routes"
+);
 
+app.use("/api/dashboard", dashboardRoutes);
 
 app.use("/api/worklogs", workLogRoutes);
 app.use("/api/replies", logReplyRoutes);
