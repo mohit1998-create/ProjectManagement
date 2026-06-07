@@ -1,268 +1,537 @@
-# Project Management System
+# Role-Based Project & Task Management System
 
-## Overview
-
-A RESTful Project Management API built with Node.js, Express.js, and MongoDB. The system enables organizations to manage projects, tasks, team members, and work logs efficiently through role-based access control.
-
-## Features
-
-### Authentication & Authorization
-
-* User Registration
-* User Login
-* JWT Authentication
-* Role-Based Access Control
-* Protected Routes
-* User Profile Management
-
-### Project Management
-
-* Create Projects
-* Update Projects
-* Delete Projects
-* View Project Details
-* Assign Project Managers
-* Track Project Status
-
-### Task Management
-
-* Create Tasks
-* Assign Tasks to Team Members
-* Update Task Status
-* Task Priority Management
-* Due Date Tracking
-* Task Progress Monitoring
-
-### Work Logs
-
-* Create Work Logs
-* Track Hours Worked
-* Add Work Descriptions
-* View Work History
-* Associate Logs with Tasks
-
-### File Uploads
-
-* Upload Task Attachments
-* Store Supporting Documents
-* File Validation
-
-### Notifications & Automation
-
-* Scheduled Cron Jobs
-* Automated Status Updates
-* Deadline Monitoring
+A full-stack MERN application that enables organizations to manage projects, assign tasks, track employee work logs, monitor project progress, and automate deadline notifications through role-based access control (RBAC).
 
 ---
 
-## Tech Stack
+# 🚀 Features
 
-### Backend
+## Authentication & Authorization
+
+* JWT Authentication
+* Login
+* User Profile
+* Role-Based Access Control (RBAC)
+* Protected Routes
+* Password Hashing using bcrypt
+
+### Supported Roles
+
+#### Admin
+
+* Full system access
+* Manage users
+* Manage projects
+* Manage tasks
+* View reports
+* View audit logs
+* Access dashboards
+
+#### Project Manager
+
+* Manage assigned projects
+* Create and assign tasks
+* Review employee work logs
+* Reply to work logs
+* View project reports
+
+#### Employee
+
+* View assigned tasks
+* Update task status
+* Submit work logs
+* Upload attachments
+* Receive notifications
+
+---
+
+# 📦 Modules
+
+## User Management
+
+### Features
+
+* Create User
+* Get Users
+* Get User By ID
+* Update User
+* Soft Delete User
+* Search Users
+* Pagination
+* Role Filtering
+
+---
+
+## Project Management
+
+### Features
+
+* Create Project
+* Get Projects
+* Get Project By ID
+* Update Project
+* Archive Project
+* Search Projects
+* Filter By Status
+* Filter By Project Manager
+* Pagination
+
+### Project Status
+
+* Planning
+* Active
+* Completed
+* Archived
+
+### Visibility Rules
+
+Admin:
+
+* View all projects
+
+Project Manager:
+
+* View only assigned projects
+
+Employee:
+
+* No project management access
+
+---
+
+## Task Management
+
+### Features
+
+* Create Task
+* Get Tasks
+* Get Task By ID
+* Update Task
+* Update Task Status
+* Archive Task
+* Search Tasks
+* Filter Tasks
+* Pagination
+
+### Task Status
+
+* To Do
+* In Progress
+* In Review
+* Completed
+* Blocked
+
+### Priority Levels
+
+* Low
+* Medium
+* High
+* Critical
+
+### Visibility Rules
+
+Admin:
+
+* Access all tasks
+
+Project Manager:
+
+* Access tasks belonging to managed projects
+
+Employee:
+
+* Access only assigned tasks
+
+---
+
+## Work Log System
+
+Employees can submit work progress.
+
+### Features
+
+* Create Work Log
+* Get Work Logs
+* Get Work Log By ID
+* Update Work Log
+* Archive Work Log
+* File Attachments
+* Search
+* Filters
+* Pagination
+
+### Fields
+
+* Description
+* Hours Worked
+* Timestamp
+* Attachment (Optional)
+
+### Visibility Rules
+
+Admin:
+
+* View all logs
+
+Project Manager:
+
+* View logs of assigned projects
+
+Employee:
+
+* View own logs only
+
+---
+
+## Log Reply System
+
+Project Managers can respond to employee work logs.
+
+### Features
+
+* Create Reply
+* Get Replies
+* Get Reply By ID
+* Update Reply
+* Delete Reply
+* Search
+* Filters
+* Pagination
+
+### Visibility Rules
+
+Admin:
+
+* View all replies
+
+Project Manager:
+
+* Manage replies in assigned projects
+
+Employee:
+
+* View replies related to own work logs
+
+---
+
+## Notifications
+
+### Features
+
+* Task Assignment Notifications
+* Reminder Notifications
+* Overdue Notifications
+* Mark As Read
+* Mark All As Read
+
+Notification Types:
+
+* TASK_ASSIGNED
+* REMINDER
+* OVERDUE
+* WORKLOG_REPLY
+
+---
+
+## Dashboard APIs
+
+### Admin Dashboard
+
+* Total Users
+* Total Projects
+* Total Tasks
+* Active Employees
+* Completed Tasks
+* Overdue Tasks
+
+### Project Manager Dashboard
+
+* Managed Projects
+* Active Tasks
+* Employee Productivity
+* Upcoming Deadlines
+
+### Employee Dashboard
+
+* Assigned Tasks
+* Completed Tasks
+* Pending Tasks
+* Recent Work Logs
+
+---
+
+## Reports
+
+### Project Report
+
+* Completion Percentage
+* Total Tasks
+* Completed Tasks
+* Pending Tasks
+
+### Employee Report
+
+* Assigned Tasks
+* Completed Tasks
+* Average Completion Time
+* Total Hours Logged
+
+---
+
+## Audit Logs
+
+Tracks all critical actions.
+
+### Logged Events
+
+* Login
+* Project Creation
+* Project Update
+* Task Creation
+* Task Update
+* Task Assignment
+* Status Changes
+* Work Log Submission
+* Work Log Reply
+* User Updates
+
+### Audit Fields
+
+* User
+* Action
+* Entity
+* Entity ID
+* Previous Value
+* New Value
+* Timestamp
+
+---
+
+# 📧 Email Notification System
+
+Automated email notifications using Nodemailer.
+
+### Notifications
+
+* Task Assigned
+* 48 Hours Reminder
+* 24 Hours Reminder
+* 12 Hours Reminder
+* 1 Hour Reminder
+* Overdue Alert
+
+Recipients:
+
+* Assigned Employee
+* Project Manager (for overdue tasks)
+
+---
+
+# ⏰ Background Jobs
+
+Implemented using:
+
+* node-cron
+
+### Scheduled Tasks
+
+Runs every hour and checks:
+
+* Upcoming deadlines
+* Overdue tasks
+
+Prevents duplicate notifications using reminder tracking.
+
+---
+
+# 📁 File Uploads
+
+Implemented using:
+
+* Multer
+
+Supported Files:
+
+* PDF
+* DOC
+* DOCX
+* JPG
+* PNG
+
+Maximum File Size:
+
+* 5 MB
+
+Uploaded files are stored in:
+
+/uploads
+
+---
+
+# 🛡 Security Features
+
+* JWT Authentication
+* Password Hashing (bcrypt)
+* Role-Based Authorization
+* Input Validation (Joi)
+* Centralized Error Handling
+* Soft Deletes
+* Protected APIs
+
+---
+
+# 🏗 Architecture
+
+Backend follows a modular architecture:
+
+src/
+├── config/
+├── middleware/
+├── jobs/
+├── services/
+├── modules/
+│ ├── auth/
+│ ├── users/
+│ ├── projects/
+│ ├── tasks/
+│ ├── worklogs/
+│ ├── logreplies/
+│ ├── notifications/
+│ ├── reports/
+│ ├── dashboard/
+│ └── auditlogs/
+
+Each module contains:
+
+* Model
+* Service
+* Controller
+* Routes
+* Validation
+
+---
+
+# 🗄 Database
+
+MongoDB + Mongoose
+
+Main Collections:
+
+* Users
+* Projects
+* Tasks
+* WorkLogs
+* LogReplies
+* Notifications
+* AuditLogs
+
+---
+
+# ⚙️ Tech Stack
+
+## Backend
 
 * Node.js
 * Express.js
-
-### Database
-
 * MongoDB
-* Mongoose ODM
-
-### Authentication
-
-* JSON Web Token (JWT)
-* bcrypt
-
-### Utilities
-
-* Multer (File Uploads)
+* Mongoose
+* JWT
+* Joi
+* Multer
+* Nodemailer
 * Node Cron
-* Express Validator
+
+## Frontend
+
+* React
+* React Router
+* Redux Toolkit
+* Material UI
 
 ---
 
-## Project Structure
+# 🔧 Installation
 
-```text
-src/
-│
-├── config/
-├── modules/
-│   ├── auth/
-│   ├── users/
-│   ├── projects/
-│   ├── tasks/
-│   ├── worklogs/
-│   └── uploads/
-│
-├── middleware/
-├── services/
-├── utils/
-├── jobs/
-├── routes/
-└── app.js
+## Clone Repository
 
-server.js
-```
-
----
-
-## Installation
-
-### Clone Repository
-
-```bash
 git clone https://github.com/mohit1998-create/ProjectManagement.git
 
 cd ProjectManagement
-```
 
-### Install Dependencies
+---
 
-```bash
+## Backend Setup
+
+cd server
+
 npm install
-```
 
-### Create Environment File
+Create .env file
 
-Create a `.env` file in the root directory.
-
-```env
 PORT=5000
 
-MONGODB_URI=mongodb://localhost:27017/project_management
+MONGO_URI=your_mongodb_connection
 
-JWT_SECRET=your_jwt_secret
+JWT_SECRET=your_secret
 
-JWT_EXPIRES_IN=7d
-```
+EMAIL_HOST=smtp.gmail.com
 
-### Run Development Server
+EMAIL_PORT=587
 
-```bash
+EMAIL_USER=your_email
+
+EMAIL_PASS=your_app_password
+
+Run Server
+
 npm run dev
-```
-
-### Run Production Server
-
-```bash
-npm start
-```
 
 ---
 
-## API Modules
+## Frontend Setup
 
-### Auth APIs
+cd client
 
-```http
-POST /api/auth/register
-POST /api/auth/login
-GET  /api/auth/profile
-```
+npm install
 
-### User APIs
-
-```http
-GET    /api/users
-GET    /api/users/:id
-PUT    /api/users/:id
-DELETE /api/users/:id
-```
-
-### Project APIs
-
-```http
-POST   /api/projects
-GET    /api/projects
-GET    /api/projects/:id
-PUT    /api/projects/:id
-DELETE /api/projects/:id
-```
-
-### Task APIs
-
-```http
-POST   /api/tasks
-GET    /api/tasks
-GET    /api/tasks/:id
-PUT    /api/tasks/:id
-DELETE /api/tasks/:id
-```
-
-### Work Log APIs
-
-```http
-POST   /api/worklogs
-GET    /api/worklogs
-GET    /api/worklogs/:id
-```
+npm run dev
 
 ---
 
-## Architecture Decisions
+# API Base URL
 
-### Layered Architecture
-
-The application follows a layered architecture:
-
-```text
-Controller
-    ↓
-Service
-    ↓
-Repository/Model
-    ↓
-MongoDB
-```
-
-Benefits:
-
-* Better maintainability
-* Separation of concerns
-* Easier testing
-* Scalability
-
-### JWT Authentication
-
-JWT is used for stateless authentication to improve scalability and simplify API consumption.
-
-### MongoDB
-
-MongoDB was selected because:
-
-* Flexible schema design
-* Fast development
-* Suitable for project and task management data structures
+http://localhost:5000/api
 
 ---
 
-## Assumptions
+# Future Enhancements
 
-* Every user has a valid role.
-* Only authorized users can access protected routes.
-* Tasks belong to a project.
-* Work logs are associated with tasks.
-* File uploads are validated before storage.
-* JWT tokens are required for protected APIs.
-
----
-
-## Future Improvements
-
-* Email Notifications
-* Real-Time Updates using WebSockets
-* Dashboard Analytics
-* Activity Logs
-* Team Chat Module
+* Real-Time Notifications (Socket.io)
+* Kanban Board
+* Swagger Documentation
 * Docker Deployment
-* Unit & Integration Testing
+* Unit Testing
 * CI/CD Pipeline
+* Multi-Tenant Support
 
 ---
 
-## Author
+# Assumptions
+
+* Each project has one Project Manager.
+* Employees can be assigned multiple tasks.
+* Archived projects cannot be modified.
+* Archived tasks are excluded from active listings.
+* Reminder notifications are sent once per reminder type.
+* Overdue notifications are sent only once.
+
+---
+
+# Author
 
 Mohit Choudhary
+
+Full Stack Developer
 
 GitHub:
 https://github.com/mohit1998-create
