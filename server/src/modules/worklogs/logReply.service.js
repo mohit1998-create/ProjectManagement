@@ -42,16 +42,56 @@ const createReply = async (
 };
 
 const getReplies = async (
-  workLogId
+  workLogId,
+  currentUser
 ) => {
   const workLog =
-    await WorkLog.findById(workLogId);
+    await WorkLog.findById(workLogId)
+      .populate({
+        path: "taskId",
+        populate: {
+          path: "projectId",
+          select: "managerId",
+        },
+      });
 
   if (!workLog) {
     throw new ApiError(
       404,
       "Work log not found"
     );
+  }
+
+  // Employee
+  if (
+    currentUser.role ===
+    "Employee"
+  ) {
+    if (
+      workLog.employeeId.toString() !==
+      currentUser._id.toString()
+    ) {
+      throw new ApiError(
+        403,
+        "Access denied"
+      );
+    }
+  }
+
+  // PM
+  if (
+    currentUser.role ===
+    "ProjectManager"
+  ) {
+    if (
+      workLog.taskId.projectId.managerId.toString() !==
+      currentUser._id.toString()
+    ) {
+      throw new ApiError(
+        403,
+        "Access denied"
+      );
+    }
   }
 
   return await LogReply.find({
@@ -70,18 +110,19 @@ const getReplies = async (
 const getReplyById = async (
   id
 ) => {
-  const reply =
-    await LogReply.findOne({
-      _id: id,
-      isActive: true,
-    })
-      .populate(
-        "managerId",
-        "name email"
-      )
-      .populate(
-        "workLogId"
-      );
+const reply =
+  await LogReply.findById(id)
+    .populate("managerId")
+    .populate({
+      path: "workLogId",
+      populate: {
+        path: "taskId",
+        populate: {
+          path: "projectId",
+          select: "managerId",
+        },
+      },
+    });
 
   if (!reply) {
     throw new ApiError(
@@ -89,6 +130,36 @@ const getReplyById = async (
       "Reply not found"
     );
   }
+
+  if (
+  currentUser.role ===
+  "Employee"
+) {
+  if (
+    reply.workLogId.employeeId.toString() !==
+    currentUser._id.toString()
+  ) {
+    throw new ApiError(
+      403,
+      "Access denied"
+    );
+  }
+}
+
+if (
+  currentUser.role ===
+  "ProjectManager"
+) {
+  if (
+    reply.workLogId.taskId.projectId.managerId.toString() !==
+    currentUser._id.toString()
+  ) {
+    throw new ApiError(
+      403,
+      "Access denied"
+    );
+  }
+}
 
   return reply;
 };
