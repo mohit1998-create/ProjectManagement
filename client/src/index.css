@@ -56,7 +56,7 @@ body {
 }
 
 #root {
-  width: 1126px;
+  width: 100%;
   max-width: 100%;
   margin: 0 auto;
   text-align: center;
@@ -68,11 +68,7 @@ body {
 }
 
 h1,
-h2 {
-  font-family: var(--heading);
-  font-weight: 500;
-  color: var(--text-h);
-}
+
 
 h1 {
   font-size: 56px;
@@ -84,11 +80,34 @@ h1 {
   }
 }
 h2 {
+  font-family: var(--heading);
+  font-weight: 500;
+  color: var(--text-h);
+
   font-size: 24px;
   line-height: 118%;
   letter-spacing: -0.24px;
   margin: 0 0 8px;
-  @media (max-width: 1024px) {
+}
+
+.dashboard-title {
+  font-family: var(--heading);
+  font-weight: 500;
+  color: var(--text-h);
+  font-size: 24px;
+  line-height: 118%;
+  letter-spacing: -0.24px;
+  margin: 0 0 8px;
+}
+
+@media (max-width: 1024px) {
+  .dashboard-title {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 1024px) {
+  h2 {
     font-size: 20px;
   }
 }
